@@ -1,4 +1,6 @@
 const notes = require("express").Router();
+const uniqid = require("uniqid");
+const fs = require('fs');
 const {
   readFromFile,
   writeToFile,
@@ -7,19 +9,30 @@ const {
 
 
 //get Route for notes
-notes.get("/", (req, res) => {
-  readFromFile("../db/notes.json").then((data) => res.json(JSON.parse(data)));
+notes.get("/notes", (req, res) => {
+  // readFromFile("./db/notes.json").then((data) => res.json(data));
+  fs.readFile("./db/notes.json", (error, data) =>{
+    if(error){
+      console.log(error);
+    }else{
+      // use .send instead of .Json
+      res.send(data);
+    }
+  });
 });
 
 
 // post Route for note
-notes.post("/", (req, res) => {
+notes.post("/notes", (req, res) => {
     console.log(req.body);
     
     const { title, text } = req.body;
-    
+    let newNote;
+    let id = uniqid();
+    console.log(id);
     if (req.body) {
-        const newNote = {
+        newNote = {
+            id,
             title,
             text,
         };
@@ -33,17 +46,23 @@ notes.post("/", (req, res) => {
 
 // delete Route for notes
 // work on it in a different approach, there is no id on the notes
-notes.delete("/:note_id", (req, res) => {
-  const noteId = req.params.note_id;
-  readFromFile("./db/notes.json")
-    .then((data) => JSON.parse(data))
-    .then((json) => {
-      const result = json.filter((note) => note.note_id !== noteId);
+notes.delete("/notes/:id", (req, res) => {
+  // gets the req variable, and id
+  const noteId = req.params.id;
 
+  fs.readFile('./db/notes.json', (error, data) =>{
+    if(error){
+      console.log(error);
+    }else{
+      let jsonData = JSON.parse(data);
+
+      const result = jsonData.filter((note) => note.id !== noteId);
+    
       writeToFile("./db/notes.json", result);
-
+    
       res.json(`🆗 Item Deleted `);
-    });
+    } 
+  });  
 });
 
 module.exports = notes;
