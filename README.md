@@ -17,7 +17,8 @@
 * [Questions](#questions)
   
 ## Application Screenshot  
-  
+  [screenshot](./Develop/public/assets/arcane-ridge-41546.herokuapp.com_.png)
+  [screenshot 2](./Develop/public/assets/arcane-ridge-41546.herokuapp.com_notes.png)
 
 ## Description
     Project developed to create, read and delete notes on the browser. 
